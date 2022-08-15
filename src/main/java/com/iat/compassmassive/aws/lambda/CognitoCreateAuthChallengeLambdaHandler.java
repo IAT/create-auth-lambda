@@ -22,7 +22,7 @@ public class CognitoCreateAuthChallengeLambdaHandler implements RequestHandler<M
 
         log.log("Initial event to be returned from Lambda is : " + event);
         Map<String, Object> request = (Map<String, Object>) event.get("request");
-        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> response = (Map<String, Object>) event.get("response");
         List<Object> session = (List<Object>) request.get("session");
         Map<String, Object> userAttributes = (Map<String, Object>) request.get("userAttributes");
 
@@ -51,6 +51,7 @@ public class CognitoCreateAuthChallengeLambdaHandler implements RequestHandler<M
             code = String.valueOf(previousChallenge.get("challengeMetadata").toString().matches("CODE-" + "(\\d*)"));
         }
         response.put("privateChallengeParameters", code);
+        response.put("publicChallengeParameters", userAttributes.get("email"));
         response.put("challengeMetadata", "CODE-" + code);
         System.out.println("response:"+response.get("privateChallengeParameters"));
         return event;
