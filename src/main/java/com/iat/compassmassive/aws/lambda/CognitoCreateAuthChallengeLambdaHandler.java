@@ -50,10 +50,12 @@ public class CognitoCreateAuthChallengeLambdaHandler implements RequestHandler<M
             Map<String, Object> previousChallenge = (Map<String, Object>) session.get(sessionLength - 1);
             code = String.valueOf(previousChallenge.get("challengeMetadata").toString().matches("CODE-" + "(\\d*)"));
         }
-        response.put("privateChallengeParameters", code);
-        response.put("publicChallengeParameters", userAttributes.get("email"));
+        Map<String, String> privateChallengeParameters = Collections.singletonMap("ANSWER", code);
+        Map<String, String> publicChallengeParameters = Collections.singletonMap("email", userAttributes.get("email").toString());
+        response.put("privateChallengeParameters", privateChallengeParameters);
+        response.put("publicChallengeParameters", publicChallengeParameters);
         response.put("challengeMetadata", "CODE-" + code);
-        System.out.println("response:"+response.get("privateChallengeParameters"));
+        System.out.println("response:"+event);
         return event;
     }
 
